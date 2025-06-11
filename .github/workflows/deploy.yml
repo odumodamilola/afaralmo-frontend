@@ -1,0 +1,52 @@
+name: CI/CD Pipeline – Afaralmo Frontend
+
+on:
+  push:
+    branches:
+      - main  # Triggers when you push to main branch
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build Project
+        run: npm run build
+
+      # --- Optional: Upload build artifacts ---
+      - name: Upload production build
+        uses: actions/upload-artifact@v3
+        with:
+          name: build
+          path: dist/
+
+      # --- Example: Deploy to Netlify (if using Netlify CLI) ---
+      # You'll need a NETLIFY_AUTH_TOKEN and SITE_ID in GitHub Secrets
+
+      # - name: Deploy to Netlify
+      #   run: |
+      #     npm install -g netlify-cli
+      #     netlify deploy --dir=dist --prod --site=$NETLIFY_SITE_ID
+      #   env:
+      #     NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+      #     NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+
+      # --- OR: If using Vercel (via Vercel CLI) ---
+      # - name: Deploy to Vercel
+      #   run: |
+      #     npm install -g vercel
+      #     vercel --prod --confirm
+      #   env:
+      #     VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+
